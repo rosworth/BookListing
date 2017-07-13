@@ -103,20 +103,24 @@ public final class QueryUtils {
         List<Book> books = new ArrayList<>();
         try {
             JSONObject baseJsonResponse = new JSONObject(booksJSON);
-            JSONArray booksArray = baseJsonResponse.getJSONArray("items");
+            if (baseJsonResponse.has("items")) {
+                JSONArray booksArray = baseJsonResponse.getJSONArray("items");
 
-            for (int i = 0; i < booksArray.length(); i++) {
-                JSONObject currentBook = booksArray.getJSONObject(i);
-                JSONObject volumeInfo = currentBook.getJSONObject("volumeInfo");
-                String title = volumeInfo.getString("title");
-                JSONArray authorArray = volumeInfo.getJSONArray("authors");
-                List<String> authors = new ArrayList<>();
+                for (int i = 0; i < booksArray.length(); i++) {
+                    JSONObject currentBook = booksArray.getJSONObject(i);
+                    JSONObject volumeInfo = currentBook.getJSONObject("volumeInfo");
+                    String title = volumeInfo.getString("title");
+                    JSONArray authorArray = volumeInfo.optJSONArray("authors");
+                    List<String> authors = new ArrayList<>();
 
-                for (int j = 0; j < authorArray.length(); j++) {
-                    authors.add(authorArray.getString(j));
+                    if (authorArray != null) {
+                        for (int j = 0; j < authorArray.length(); j++) {
+                            authors.add(authorArray.getString(j));
+                        }
+                    }
+                    Book book = new Book(title, authors);
+                    books.add(book);
                 }
-                Book book = new Book(title, authors);
-                books.add(book);
             }
         } catch (JSONException e) {
             Log.e(LOG_TAG, "Problem parsing the JSON results", e);

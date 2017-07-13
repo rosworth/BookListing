@@ -21,12 +21,16 @@ public class Book {
 
     public String getAuthors() {
         StringBuilder sb = new StringBuilder();
-        for (String author : authorList) {
-            sb.append(author).append(", ");
+        if (authorList.size() > 0) {
+            for (String author : authorList) {
+                sb.append(author).append(", ");
+            }
+            //removes the comma and space after last author
+            sb.deleteCharAt(sb.length() - 1);
+            sb.deleteCharAt(sb.length() - 1);
+        } else {
+            sb.append("No author");
         }
-        //removes the comma and space after last author
-        sb.deleteCharAt(sb.length() - 1);
-        sb.deleteCharAt(sb.length() - 1);
         return sb.toString();
     }
 }

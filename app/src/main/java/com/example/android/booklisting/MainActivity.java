@@ -46,12 +46,11 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         mAdapter = new BookAdapter(this, new ArrayList<Book>());
         bookList.setAdapter(mAdapter);
 
-        ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        final ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
 
         final LoaderManager loaderManager = getLoaderManager();
         if (networkInfo != null && networkInfo.isConnected()) {
-
             loaderManager.initLoader(BOOK_LOADER_ID, null, this);
         } else {
             mEmptyStateTextView.setText(R.string.no_internet_connection);
@@ -61,8 +60,14 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             @Override
             public void onClick(View v) {
                 //avoids NullPointerException
+                NetworkInfo networkReTest = connMgr.getActiveNetworkInfo();
                 if (!TextUtils.isEmpty(searchText.getText().toString().trim())) {
-                    loaderManager.restartLoader(BOOK_LOADER_ID, null, MainActivity.this);
+                    if (networkReTest != null && networkReTest.isConnected()) {
+                        loaderManager.restartLoader(BOOK_LOADER_ID, null, MainActivity.this);
+                    } else {
+                        mAdapter.clear();
+                        mEmptyStateTextView.setText(R.string.no_internet_connection);
+                    }
                 }
             }
         });
