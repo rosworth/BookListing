@@ -75,16 +75,11 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
     @Override
     public Loader<List<Book>> onCreateLoader(int i, Bundle bundle) {
-        String searchTerm = searchText.getText().toString().trim();
-        //query only if text is not null
-        if (!TextUtils.isEmpty(searchTerm)) {
-            Uri baseUri = Uri.parse(GOOGLE_BOOKS_API);
-            Uri.Builder builder = baseUri.buildUpon();
-            builder.appendQueryParameter("q", searchTerm);
-            builder.appendQueryParameter("maxResults", "10");
-            return new BookLoader(this, builder.toString());
-        }
-        return null;
+        Uri baseUri = Uri.parse(GOOGLE_BOOKS_API);
+        Uri.Builder builder = baseUri.buildUpon();
+        builder.appendQueryParameter("q", searchText.getText().toString().trim());
+        builder.appendQueryParameter("maxResults", "10");
+        return new BookLoader(this, builder.toString());
     }
 
     @Override
